@@ -7,8 +7,10 @@ import gzip
 
 import shuffle
 
+
 def unicode_to_utf8(d):
-    return dict((key.encode("UTF-8"), value) for (key,value) in d.items())
+    return dict((key.encode("UTF-8"), value) for (key, value) in d.items())
+
 
 def load_dict(filename):
     try:
@@ -53,7 +55,7 @@ class DataIterator:
             arr = line.strip().split("\t")
             if arr[0] not in meta_map:
                 meta_map[arr[0]] = arr[1]
-        self.meta_id_map ={}
+        self.meta_id_map = {}
         for key in meta_map:
             val = meta_map[key]
             if key in self.source_dicts[1]:
@@ -100,7 +102,7 @@ class DataIterator:
 
     def reset(self):
         if self.shuffle:
-            self.source= shuffle.main(self.source_orig, temporary=True)
+            self.source = shuffle.main(self.source_orig, temporary=True)
         else:
             self.source.seek(0)
 
@@ -163,7 +165,7 @@ class DataIterator:
 
                 # read from source file and map to word index
 
-                #if len(mid_list) > self.maxlen:
+                # if len(mid_list) > self.maxlen:
                 #    continue
                 if self.minlen != None:
                     if len(mid_list) <= self.minlen:
@@ -178,7 +180,7 @@ class DataIterator:
                     noclk_tmp_cat = []
                     noclk_index = 0
                     while True:
-                        noclk_mid_indx = random.randint(0, len(self.mid_list_for_random)-1)
+                        noclk_mid_indx = random.randint(0, len(self.mid_list_for_random) - 1)
                         noclk_mid = self.mid_list_for_random[noclk_mid_indx]
                         if noclk_mid == pos_mid:
                             continue
@@ -190,7 +192,7 @@ class DataIterator:
                     noclk_mid_list.append(noclk_tmp_mid)
                     noclk_cat_list.append(noclk_tmp_cat)
                 source.append([uid, mid, cat, mid_list, cat_list, noclk_mid_list, noclk_cat_list])
-                target.append([float(ss[0]), 1-float(ss[0])])
+                target.append([float(ss[0]), 1 - float(ss[0])])
 
                 if len(source) >= self.batch_size or len(target) >= self.batch_size:
                     break
@@ -202,5 +204,3 @@ class DataIterator:
             source, target = self.next()
 
         return source, target
-
-

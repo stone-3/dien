@@ -16,5 +16,3 @@ while True:
     else:
         print >> ftrain, noclk_line
         print >> ftrain, clk_line
-        
-
