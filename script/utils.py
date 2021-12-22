@@ -1,3 +1,4 @@
+# coding=utf-8
 import tensorflow as tf
 from tensorflow.python.ops.rnn_cell import *
 from tensorflow.python.ops.rnn_cell_impl import _Linear
@@ -151,14 +152,14 @@ class VecAttGRUCell(RNNCell):
 def prelu(_x, scope=''):
     """parametric ReLU activation"""
     with tf.variable_scope(name_or_scope=scope, default_name="prelu"):
-        _alpha = tf.get_variable("prelu_" + scope, shape=_x.get_shape()[-1],
+        _alpha = tf.get_variable("prelu_" + scope, shape=_x.get_shape()[-1],  # 用variable有点多余？
                                  dtype=_x.dtype, initializer=tf.constant_initializer(0.1))
         return tf.maximum(0.0, _x) + _alpha * tf.minimum(0.0, _x)
 
 
 def calc_auc(raw_arr):
     """Summary
-
+    根据绘制的roc曲线计算对应的面积
     Args:
         raw_arr (TYPE): Description
 
@@ -203,7 +204,7 @@ def attention(query, facts, attention_size, mask, stag='null', mode='LIST', soft
 
     if time_major:
         # (T,B,D) => (B,T,D)
-        facts = tf.array_ops.transpose(facts, [1, 0, 2])
+        facts = tf.transpose(facts, [1, 0, 2])
 
     mask = tf.equal(mask, tf.ones_like(mask))
     hidden_size = facts.get_shape().as_list()[-1]  # D value - hidden size of the RNN layer
@@ -255,10 +256,10 @@ def din_attention(query, facts, attention_size, mask, stag='null', mode='SUM', s
 
     if time_major:
         # (T,B,D) => (B,T,D)
-        facts = tf.array_ops.transpose(facts, [1, 0, 2])
+        facts = tf.transpose(facts, [1, 0, 2])
     mask = tf.equal(mask, tf.ones_like(mask))
-    facts_size = facts.get_shape().as_list()[-1]  # D value - hidden size of the RNN layer
-    querry_size = query.get_shape().as_list()[-1]
+    # facts_size = facts.get_shape().as_list()[-1]  # D value - hidden size of the RNN layer
+    # querry_size = query.get_shape().as_list()[-1]
     queries = tf.tile(query, [1, tf.shape(facts)[1]])
     queries = tf.reshape(queries, tf.shape(facts))
     din_all = tf.concat([queries, facts, queries - facts, queries * facts], axis=-1)
@@ -301,7 +302,7 @@ def din_fcn_attention(query, facts, attention_size, mask, stag='null', mode='SUM
 
     if time_major:
         # (T,B,D) => (B,T,D)
-        facts = tf.array_ops.transpose(facts, [1, 0, 2])
+        facts = tf.transpose(facts, [1, 0, 2])
     # Trainable parameters
     mask = tf.equal(mask, tf.ones_like(mask))
     facts_size = facts.get_shape().as_list()[-1]  # D value - hidden size of the RNN layer
@@ -401,7 +402,7 @@ def din_fcn_shine(query, facts, attention_size, mask, stag='null', mode='SUM', s
 
     if time_major:
         # (T,B,D) => (B,T,D)
-        facts = tf.array_ops.transpose(facts, [1, 0, 2])
+        facts = tf.transpose(facts, [1, 0, 2])
     # Trainable parameters
     mask = tf.equal(mask, tf.ones_like(mask))
     facts_size = facts.get_shape().as_list()[-1]  # D value - hidden size of the RNN layer
